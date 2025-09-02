@@ -2,8 +2,8 @@
 import { ref } from 'vue'
 
 type DomainInfoResult = {
-  domainInformation: object
-  contactInformation: object
+  domainInformation: Record<string, string>
+  contactInformation: Record<string, string>
 }
 
 const domain = ref<string>('')
@@ -19,29 +19,31 @@ const loadDomainInfo = async () => {
       'Content-Type': "application/json",
       'Accept': "application/json",
     },
-    body: JSON.stringify({
-      domain: domain.value,
-    })
-  }).then(res => res.json())
+    body: JSON.stringify({ domain: domain.value })
+  })
+    .then(res => res.json())
     .then(data => {
-      if(data.statusCode >= 400) {
+      if (data.statusCode >= 400) {
         console.error(data.message)
         alert(data.message)
         return
       }
       domainResult.value = data
     })
-    .then(() => loading.value = false)
+    .finally(() => {
+      loading.value = false
+    })
 }
-
 </script>
-<template>
-  <h1>Whois Registry Search</h1>
 
-  <div class="container my-5">
-    <div class="mb-4">
-      <label for="domainInput" class="form-label fw-bold">Domain:</label>
-      <div class="input-group">
+<template>
+  <div class="container-sm my-4">
+    <h2 class="text-center mb-4">Whois Registry Search</h2>
+
+    <!-- Domain Input -->
+    <div class="mb-3">
+      <label for="domainInput" class="form-label fw-semibold small">Domain:</label>
+      <div class="input-group input-group-sm">
         <input
           id="domainInput"
           type="text"
@@ -53,63 +55,71 @@ const loadDomainInfo = async () => {
       </div>
     </div>
 
-    <div v-if="loading" class="spinner-border" role="status"></div>
+    <!-- Loading Spinner -->
+    <div v-if="loading" class="d-flex justify-content-center my-3">
+      <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+    </div>
 
-    <div v-if="domainResult" class="card mb-4 shadow-sm">
-      <div class="card-header bg-primary text-white">
-        <h5 class="mb-0">Domain Information</h5>
+    <!-- Domain Information -->
+    <div v-if="domainResult" class="card mb-3 shadow-sm">
+      <div class="card-header bg-primary text-white py-2">
+        <h6 class="mb-0">Domain Information</h6>
       </div>
-      <div class="card-body">
-        <table class="table table-striped table-bordered align-middle">
-          <thead class="table-light">
-            <tr>
-              <th scope="col">Domain Name</th>
-              <th scope="col">Registrar</th>
-              <th scope="col">Registration Date</th>
-              <th scope="col">Expiration Date</th>
-              <th scope="col">Estimated Domain Age</th>
-              <th scope="col">Hostnames</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>{{ domainResult.domainInformation?.domainName ?? 'N/A' }}</td>
-              <td>{{ domainResult.domainInformation?.registrar ?? 'N/A' }}</td>
-              <td>{{ domainResult.domainInformation?.registrationDate ?? 'N/A' }}</td>
-              <td>{{ domainResult.domainInformation?.expirationDate ?? 'N/A' }}</td>
-              <td>{{ domainResult.domainInformation?.estimatedDomainAge ?? 'N/A' }}</td>
-              <td>{{ domainResult.domainInformation?.hostnames ?? 'N/A' }}</td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="card-body p-2">
+        <div class="table-responsive">
+          <table class="table table-sm table-striped table-bordered align-middle mb-0">
+            <thead class="table-light small">
+              <tr>
+                <th>Domain Name</th>
+                <th>Registrar</th>
+                <th>Registration Date</th>
+                <th>Expiration Date</th>
+                <th>Estimated Domain Age</th>
+                <th>Hostnames</th>
+              </tr>
+            </thead>
+            <tbody class="small">
+              <tr>
+                <td>{{ domainResult.domainInformation?.domainName ?? 'N/A' }}</td>
+                <td>{{ domainResult.domainInformation?.registrar ?? 'N/A' }}</td>
+                <td>{{ domainResult.domainInformation?.registrationDate ?? 'N/A' }}</td>
+                <td>{{ domainResult.domainInformation?.expirationDate ?? 'N/A' }}</td>
+                <td>{{ domainResult.domainInformation?.estimatedDomainAge ?? 'N/A' }}</td>
+                <td>{{ domainResult.domainInformation?.hostnames ?? 'N/A' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
 
+    <!-- Contact Information -->
     <div v-if="domainResult" class="card shadow-sm">
-      <div class="card-header bg-secondary text-white">
-        <h5 class="mb-0">Contact Information</h5>
+      <div class="card-header bg-secondary text-white py-2">
+        <h6 class="mb-0">Contact Information</h6>
       </div>
-      <div class="card-body">
-        <table class="table table-striped table-bordered align-middle">
-          <thead class="table-light">
-            <tr>
-              <th scope="col">Registrant Name</th>
-              <th scope="col">Technical Contact Name</th>
-              <th scope="col">Administrative Contact Name</th>
-              <th scope="col">Contact Email</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>{{ domainResult.contactInformation?.registrantName ?? 'N/A' }}</td>
-              <td>{{ domainResult.contactInformation?.technicalContactName ?? 'N/A' }}</td>
-              <td>{{ domainResult.contactInformation?.administrativeContactName ?? 'N/A' }}</td>
-              <td>{{ domainResult.contactInformation?.contactEmail ?? 'N/A' }}</td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="card-body p-2">
+        <div class="table-responsive">
+          <table class="table table-sm table-striped table-bordered align-middle mb-0">
+            <thead class="table-light small">
+              <tr>
+                <th>Registrant Name</th>
+                <th>Technical Contact Name</th>
+                <th>Administrative Contact Name</th>
+                <th>Contact Email</th>
+              </tr>
+            </thead>
+            <tbody class="small">
+              <tr>
+                <td>{{ domainResult.contactInformation?.registrantName ?? 'N/A' }}</td>
+                <td>{{ domainResult.contactInformation?.technicalContactName ?? 'N/A' }}</td>
+                <td>{{ domainResult.contactInformation?.administrativeContactName ?? 'N/A' }}</td>
+                <td>{{ domainResult.contactInformation?.contactEmail ?? 'N/A' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
-
   </div>
 </template>
