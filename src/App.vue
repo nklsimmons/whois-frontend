@@ -30,7 +30,7 @@ const loadDomainInfo = async () => {
     .then(res => res.json())
     .then(data => {
       if (data.statusCode >= 400) {
-        console.error(data.message)
+        console.error(data)
         alert(data.message)
         return
       }
