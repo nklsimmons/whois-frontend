@@ -6,14 +6,20 @@ type DomainInfoResult = {
   contactInformation: Record<string, string>
 }
 
+const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/'
+
 const domain = ref<string>('')
 const loading = ref<boolean>(false)
 const domainResult = ref<DomainInfoResult | null>(null)
 
 const loadDomainInfo = async () => {
+  if(loading.value || !domain.value) {
+    return false
+  }
+
   loading.value = true
 
-  fetch("http://localhost:5000/", {
+  fetch(apiUrl, {
     method: "POST",
     headers: {
       'Content-Type': "application/json",
@@ -40,7 +46,6 @@ const loadDomainInfo = async () => {
   <div class="container-sm my-4">
     <h2 class="text-center mb-4">Whois Registry Search</h2>
 
-    <!-- Domain Input -->
     <div class="mb-3">
       <label for="domainInput" class="form-label fw-semibold small">Domain:</label>
       <div class="input-group input-group-sm">
@@ -56,12 +61,10 @@ const loadDomainInfo = async () => {
       </div>
     </div>
 
-    <!-- Loading Spinner -->
     <div v-if="loading" class="d-flex justify-content-center my-3">
       <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
     </div>
 
-    <!-- Domain Information -->
     <div v-if="domainResult" class="card mb-3 shadow-sm">
       <div class="card-header bg-primary text-white py-2">
         <h6 class="mb-0">Domain Information</h6>
@@ -94,7 +97,6 @@ const loadDomainInfo = async () => {
       </div>
     </div>
 
-    <!-- Contact Information -->
     <div v-if="domainResult" class="card shadow-sm">
       <div class="card-header bg-secondary text-white py-2">
         <h6 class="mb-0">Contact Information</h6>
