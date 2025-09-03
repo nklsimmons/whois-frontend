@@ -61,7 +61,7 @@ const loadDomainInfo = async () => {
           class="form-control"
           placeholder="Enter domain name"
         />
-        <button @click="loadDomainInfo" :disabled="!domain.value" class="btn btn-primary">Search</button>
+        <button @click="loadDomainInfo" :disabled="!domain" class="btn btn-primary">Search</button>
       </div>
     </div>
 
