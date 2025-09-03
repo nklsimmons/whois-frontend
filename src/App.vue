@@ -48,6 +48,7 @@ const loadDomainInfo = async () => {
           id="domainInput"
           type="text"
           v-model="domain"
+          @keyup.enter="loadDomainInfo"
           class="form-control"
           placeholder="Enter domain name"
         />
