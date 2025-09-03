@@ -36,6 +36,10 @@ const loadDomainInfo = async () => {
       }
       domainResult.value = data
     })
+    .catch(err => {
+      console.error(err)
+      alert('An error occurred while fetching domain information.')
+    })
     .finally(() => {
       loading.value = false
     })
